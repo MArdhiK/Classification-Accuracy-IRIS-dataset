@@ -1,2 +1,11 @@
 # Classification-Accuracy-IRIS-dataset
-Classification Accuracy IRIS dataset with 4 type modelling
+Classification Accuracy IRIS dataset with 4 algorithm
+Use 
+1. Linear Discriminant Analysis (LDA)
+2. Classification and Regression Trees (CART)
+3. k-Nearest Neighbors (kNN)
+4. Support Vector Machines (SVM)
+5. Random Forest (RF)
+and the result, LDA is the winner with
+Accuracy     Kappa
+0.9833333    0.975
