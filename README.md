@@ -9,5 +9,6 @@ Use
 
 and the result, LDA is the winner with
 
-Accuracy     Kappa
-0.9833333    0.975
+Accuracy         Kappa
+
+0.9833333         0.975
