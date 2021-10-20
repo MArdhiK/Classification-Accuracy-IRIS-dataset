@@ -6,6 +6,8 @@ Use
 3. k-Nearest Neighbors (kNN)
 4. Support Vector Machines (SVM)
 5. Random Forest (RF)
+
 and the result, LDA is the winner with
+
 Accuracy     Kappa
 0.9833333    0.975
