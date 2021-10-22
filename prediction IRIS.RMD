@@ -1,0 +1,138 @@
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(caret)
+library(ellipse)
+data("iris")
+```
+
+```{r, message=FALSE, warning=FALSE}
+ggplot(iris, aes(
+  x=Petal.Length,
+  y=Sepal.Length,
+  colour=Species))+
+geom_point()+
+ggtitle("Iris Species by Petal and Sepal Length")
+```
+
+#percentage of species
+```{r}
+percentage<-prop.table(table(iris$Species))*100
+cbind(freq=table(iris$Species), percentage=percentage)
+```
+
+```{r}
+dataset<-iris
+```
+
+#80% train data
+```{r}
+validation_index<-createDataPartition(dataset$Species, p=0.8, list = FALSE)
+```
+
+#20% validation data
+```{r}
+validation<-dataset[-validation_index,]
+```
+
+#80% for training and test model
+```{r}
+dataset<-dataset[validation_index,]
+```
+
+#accomodate numeric data type / column 1-4
+```{r}
+x<-dataset[,1:4]
+par(mfrow=c(1,4))
+for(i in 1:4) {
+  boxplot(x[,i], main=names(iris))[i]}
+```
+
+#accomodate the column 5 / species
+```{r}
+y<-dataset[,5]
+```
+
+```{r}
+featurePlot(x=x, y=y, plot = "ellipse")
+```
+
+```{r}
+featurePlot(x=x, y=y, plot = "box")
+```
+
+```{r}
+scales<-list(x=list(relation="free"), y=list(relation="free"))
+featurePlot(x=x, y=y, plot="density", scales=scales)
+```
+
+#estimate the accuracy with 10-fold crossvalidation
+```{r}
+control<- trainControl(method="cv", number=10)
+metric<-"Accuracy"
+```
+
+#LDA algorithm
+```{r}
+set.seed(7)
+fit.lda<-train(Species~., data=dataset, method="lda", metric=metric, trControl=control)
+```
+
+##CART algorithm
+```{r}
+set.seed(7)
+fit.cart<-train(Species~., data=dataset, method="rpart", metric=metric, trControl=control)
+```
+
+#kNN algorithm
+```{r}
+set.seed(7)
+fit.knn<-train(Species~., data=dataset, method="knn", metric=metric, trControl=control)
+```
+
+#SVM algorithm
+```{r}
+set.seed(7)
+fit.svm<-train(Species~., data=dataset, method="svmRadial", metric=metric, trControl=control)
+```
+
+#Random Forest Algorithm
+```{r}
+set.seed(7)
+fit.rf<-train(Species~., data=dataset, method="rf", metric=metric, trControl=control)
+```
+
+```{r}
+results<-resamples(list(lda=fit.lda, cart=fit.cart, knn=fit.knn, svm=fit.svm, rf=fit.rf))
+summary(results)
+```
+
+```{r}
+dotplot(results)
+```
+
+```{r}
+print(fit.lda);
+```
+
+```{r}
+print(fit.knn);
+```
+
+```{r}
+print(fit.cart);
+```
+
+```{r}
+print(fit.rf);
+```
+
+```{r}
+print(fit.svm)
+```
+
+```{r}
+predictions<-predict(fit.lda, validation)
+confusionMatrix(predictions, validation$Species)
+```
+
